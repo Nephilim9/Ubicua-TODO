@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    restart: unless-stopped
+    privileged: true # Necesario para acceder a /dev/ttyUSB0
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./cache:/app/cache
+      - /dev:/dev # Mapeo de hardware
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///app/data/sistema_seguridad.db
+      - ESP32_SERIAL_PORT=/dev/ttyUSB0
+    deploy:
+      resources:
+        limits:
+          memory: 400M # Límite estricto para RPi 3B+

@@ -1,0 +1,23 @@
+FROM python:3.11-slim-bookworm
+
+WORKDIR /app
+
+# Dependencias del sistema para SQLite y Serial
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    libsqlite3-dev \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Directorios de persistencia
+RUN mkdir -p /app/data /app/cache
+
+# Comando de inicio: Migraciones + Servidor optimizado
+CMD alembic upgrade head && \
+    uvicorn app.main:app --host 0.0.0.0 --port 8000 \
+    --workers 1 --limit-concurrency 50 --timeout-keep-alive 5
