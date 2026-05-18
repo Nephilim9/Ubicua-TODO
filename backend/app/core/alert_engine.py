@@ -1,6 +1,9 @@
 # Proyecto: SafeHome ESP-NOW | Grupo 4
 import asyncio
+import logging
 from app.services.alert_service import AlertService
+
+logger = logging.getLogger(__name__)
 
 class AlertEngine:
     """
@@ -15,3 +18,4 @@ class AlertEngine:
 
     async def stop(self):
         self.is_running = False
+        logger.info("Motor de evaluación de umbrales detenido.")

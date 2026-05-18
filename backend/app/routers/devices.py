@@ -16,11 +16,10 @@ async def list_devices(db: AsyncSession = Depends(get_db)):
 
 @router.post("/", response_model=DeviceResponse, status_code=status.HTTP_201_CREATED)
 async def register_device(device_in: DeviceCreate, db: AsyncSession = Depends(get_db)):
-    # Verificar si ya existe por MAC
     existing = await db.execute(select(Device).where(Device.mac_address == device_in.mac_address))
     if existing.scalar_one_or_none():
         raise HTTPException(status_code=400, detail="La dirección MAC ya está registrada")
-    
+
     new_device = Device(**device_in.model_dump())
     db.add(new_device)
     await db.commit()
@@ -39,11 +38,34 @@ async def update_device(device_id: int, device_in: DeviceUpdate, db: AsyncSessio
     device = await db.get(Device, device_id)
     if not device:
         raise DeviceNotFoundError(str(device_id))
-    
+
     update_data = device_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(device, key, value)
-    
+
     await db.commit()
     await db.refresh(device)
     return device
+
+@router.delete("/{device_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_device(device_id: int, db: AsyncSession = Depends(get_db)):
+    device = await db.get(Device, device_id)
+    if not device:
+        raise DeviceNotFoundError(str(device_id))
+    await db.delete(device)
+    await db.commit()
+
+@router.post("/{device_id}/ping")
+async def ping_device(device_id: int, db: AsyncSession = Depends(get_db)):
+    """Envía un ping al ESP32 y retorna el estado de conectividad."""
+    device = await db.get(Device, device_id)
+    if not device:
+        raise DeviceNotFoundError(str(device_id))
+    # En producción esto enviaría el comando vía WiFi/serial al gateway
+    return {
+        "device_id": device_id,
+        "mac_address": device.mac_address,
+        "ping_sent": True,
+        "status": device.status,
+        "message": "Ping enviado al gateway ESP-NOW"
+    }

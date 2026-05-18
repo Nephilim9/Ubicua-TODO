@@ -1,0 +1,106 @@
+# ============================================================
+# SafeHome ESP-NOW — .gitignore
+# Proyecto: Backend FastAPI (Python/uv) + Frontend React/Vite
+# ============================================================
+
+# ─── PYTHON / BACKEND ───────────────────────────────────────
+
+# Entorno virtual de uv / venv
+.venv/
+venv/
+env/
+
+# Cache de bytecode
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Distribuciones / builds
+dist/
+build/
+*.egg-info/
+*.egg
+
+# uv lock (si se prefiere no versionar el lockfile)
+# uv.lock   ← descomenta si NO quieres versionar el lock
+
+# Base de datos SQLite (generada en tiempo de ejecución)
+backend/data/
+*.db
+*.db-shm
+*.db-wal
+
+# Caché de diskcache
+backend/cache/
+
+# Variables de entorno — NUNCA versionar credenciales
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Cobertura de tests
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Alembic (versiones auto-generadas opcionales)
+# migrations/versions/   ← descomenta si las versiones son auto-gen
+
+# MyPy / Pyright / Ruff cache
+.mypy_cache/
+.ruff_cache/
+
+# ─── NODE / FRONTEND ────────────────────────────────────────
+
+# Dependencias (siempre reinstalar con npm install)
+frontend/node_modules/
+
+# Build de producción (no versionar artefactos compilados)
+frontend/dist/
+frontend/.vite/
+
+# Variables de entorno del frontend
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# ─── EDITORES / IDEs ────────────────────────────────────────
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# JetBrains (PyCharm, WebStorm, etc.)
+.idea/
+*.iml
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ─── DOCKER ─────────────────────────────────────────────────
+
+# Sobrescrituras locales de docker-compose
+docker-compose.override.yml
+
+# ─── MISC ────────────────────────────────────────────────────
+
+# Directorios temporales
+tmp/
+temp/
+.tmp/
